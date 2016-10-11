@@ -1,3 +1,5 @@
-<h1>
-  {{title}}
+<h1 [class.red-color]="isRed">
+  {{account.name}} {{account.surname}}
 </h1>
+<course-input [value]="account.name" (myCustomEvent)="account.name=$event" ></course-input>
+
