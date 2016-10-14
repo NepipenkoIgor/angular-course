@@ -1,7 +1,25 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Directive, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 
-class CommonProp{
 
+@Directive({
+  selector: 'input[log-directive]',
+  host: {
+    '(input)': 'onInput($event)'
+  }
+})
+export class LogDirective {
+
+  private _elRef: ElementRef;
+
+  constructor(_elRef: ElementRef) {
+    this._elRef = _elRef
+    console.log(this._elRef.nativeElement)
+  }
+
+  public onInput(ev: KeyboardEvent) {
+    let el = event.target as HTMLInputElement;
+    console.log(`from derective ${el.value}`);
+  }
 }
 
 @Component({
@@ -9,7 +27,20 @@ class CommonProp{
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css']
 })
-export class InputComponent extends CommonProp{
+export class InputComponent {
+
+  public isLogged: boolean = true;
+  public width: number = 200;
+
+  public accounts = [
+    {id: 3, name: 'Igor'},
+    {id: 2, name: 'Vova'},
+    {id: 1, name: 'Mike'},
+    {id: 4, name: 'Tanya'},
+    {id: 5, name: 'Ola'},
+  ];
+  public tab = 1;
+
 
   @Input()
   public value: string;
@@ -22,5 +53,13 @@ export class InputComponent extends CommonProp{
     this.myCustomEvent.emit(el.value);
   }
 
+
+
+  /** обсудить!!!!!!  + ng-bind*/
+
+  public trackFn(index, item): any {
+    console.log(index, item)
+    return item.id
+  }
 
 }

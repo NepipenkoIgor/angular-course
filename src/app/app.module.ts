@@ -4,12 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { InputComponent } from './input/input.component';
+import { InputComponent,LogDirective } from './input/input.component';
+import { MyPipePipe } from './shared/my-pipe.pipe';
 
 @NgModule({
   declarations: [
+    LogDirective,
     AppComponent,
-    InputComponent
+    InputComponent,
+    MyPipePipe
   ],
   imports: [
     BrowserModule,
