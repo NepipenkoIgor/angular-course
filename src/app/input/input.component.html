@@ -1,14 +1,23 @@
-<input [value]="value"  [ngClass]="{isActiveClass: true,isLogged:isLogged}"
-       [ngStyle]="{'max-width.px':width}"
-       log-directive (input)="myCustomEvent.emit(inputEl.value)" #inputEl>
-<button (click)="tab=1">Переключить 1</button>
-<button (click)="tab=2">Переключить 2</button>
-<div [ngSwitch]="tab">
-  <h1 *ngSwitchCase="1">Я первый таб</h1>
-  <h1 *ngSwitchCase="2">Я второй таб</h1>
-</div>
+<!--<input [value]="value"  [ngClass]="{isActiveClass: true,isLogged:isLogged}"-->
+       <!--[ngStyle]="{'max-width.px':width}"-->
+       <!--log-directive (input)="myCustomEvent.emit(inputEl.value)" #inputEl>-->
+<!--<button (click)="tab=1">Переключить 1</button>-->
+<!--<button (click)="tab=2">Переключить 2</button>-->
+<!--<div [ngSwitch]="tab">-->
+  <!--<h1 *ngSwitchCase="1">Я первый таб</h1>-->
+  <!--<h1 *ngSwitchCase="2">Я второй таб</h1>-->
+<!--</div>-->
 
-<p *ngFor="let account of accounts | myPipe:'o':'ss'; let i=index; let even=even; trackBy:account?.id"
-[ngClass]="{even:even}">
-  {{i+1}}. {{account.name}} ({{account.id}})</p>
+<!--<p *ngFor="let account of accounts | myPipe:'o':'ss'; let i=index; let even=even; trackBy:account?.id"-->
+<!--[ngClass]="{even:even}">-->
+  <!--{{i+1}}. {{account.name}} ({{account.id}})</p>-->
 
+<div>Time: {{time | async | date:'hh:mm:ss'}}</div>
+<div>Time: {{msg | async}}</div>
+
+<p>A: {{ a | number:'1.1-3'}}</p>
+<p>B: {{ b | currency:'USD' : false : '1.1-1'}}</p>
+
+<p>{{obj | json}}</p>
+
+<p>{{name | lowercase}}</p>
