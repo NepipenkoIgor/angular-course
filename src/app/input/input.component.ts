@@ -1,58 +1,15 @@
-import {Component, Input, Output, EventEmitter, Inject} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
-
-import {InputService} from './input.service';
-
+import {Component, Input, Output, EventEmitter, Directive} from "@angular/core";
+import {FormControl, FormGroup, FormBuilder, Validators,NG_VALIDATORS} from "@angular/forms";
+import "rxjs/add/operator/debounceTime";
+import {Observable} from "rxjs/Observable";
+import "rxjs/add/observable/of";
+import "rxjs/add/operator/delay";
 @Component({
   selector: 'course-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css']
 })
 export class InputComponent {
-
-  private _inputService:InputService;
-
-  public name = 'VOVA';
-
-  public obj = {
-    name: 'Vlad',
-    id: 3
-  }
-  public a: number = 0.2345;
-  public b: number = 1.2845;
-
-  constructor(_inputService:InputService,
-    @Inject('SizeService') private _sizeService,
-              @Inject('API_URL') private _api_url ){
-    this._sizeService.run();
-    this._inputService=_inputService;
-
-    this._inputService.getUsers().subscribe(users=>{
-      console.log(users)
-    })
-
-  }
-
-  public msg = new Promise<string>((resolve, reject) => {
-    setTimeout(() => resolve('My msg'), 3000)
-  })
-
-  public time = new Observable<string>((observer: Observer<string>) => {
-    setInterval(() => observer.next(new Date().toString()), 1000)
-  })
-  // public isLogged: boolean = true;
-  // public width: number = 200;
-  //
-  // public accounts = [
-  //   {id: 3, name: 'Igor'},
-  //   {id: 2, name: 'Vova'},
-  //   {id: 1, name: 'Mike'},
-  //   {id: 4, name: 'Tanya'},
-  //   {id: 5, name: 'Ola'},
-  // ];
-  // public tab = 1;
-
 
   @Input()
   public value: string;
@@ -61,19 +18,89 @@ export class InputComponent {
   public myCustomEvent: EventEmitter<string> = new EventEmitter();
 
 
-  change() {
-    console.log(this)
+  public username: FormControl;
+  // public fullname: FormGroup;
+  public formModel: FormGroup;
+
+  private _fb: FormBuilder;
+
+  constructor(_fb: FormBuilder) {
+
+    this._fb = _fb;
+    this.username = new FormControl('init value')
+
+
+    // this.fullname = new FormGroup({
+    //   firsName:new FormControl('Igor'),
+    //   lastName:new FormControl('Nepipenko'),
+    // })
+
+    // this.formModel = new FormGroup({
+    //   fullname: new FormGroup({
+    //     firsname: new FormControl('Igor'),
+    //     lastname: new FormControl('Nepipenko'),
+    //   })
+    // })
+
+    // this.username.statusChanges
+    //   .subscribe(value=>console.log(value))
+
+
+    // this.formModel = new FormGroup({
+    //   emails: new FormArray([
+    //     new FormControl()
+    //   ])
+    // })
+
+    // this.formModel = new FormGroup({
+    //   username: new FormControl(),
+    //   ssn: new FormControl(),
+    //   passwordGroup: new FormGroup({
+    //     password: new FormControl(),
+    //     pconfirm: new FormControl()
+    //   }),
+    // })
+    this.formModel = _fb.group({
+      username: ['', [Validators.required, Validators.minLength(5)]],
+      ssn: ['', null, this.ssnValidator],
+      passwordGroup: _fb.group({
+        password: ['', Validators.minLength(5)],
+        pconfirm: ['']
+      }, this.equalValidator)
+    })
   }
 
-  // public emit(ev: MouseEvent) {
-  //   let el = ev.target as HTMLInputElement;
-  //   this.myCustomEvent.next(el.value);
-  // }
+  public equalValidator({value}:FormGroup): {[key: string]: any} {
+    const [first,...rest] = Object.keys(value || {});
+    debugger
+    const valid = rest.every(v=>value[v] === value[first]);
+    return valid ? null : {equal: true}
+  }
 
-  //
-  // public trackFn(index, item): any {
-  //   console.log(index, item)
-  //   return item.id
-  // }
+  public ssnValidator(control: FormControl): Observable<any> {
+    const value = control.value || '';
+    const valid = value.match(/^\d{9}$/);
+    return Observable.of(valid ? null : {ssn: true}).delay(5000)
+  }
+
+  public addEmail() {
+    (this.formModel.get('emails') as any).push(new FormControl())
+  }
+
+  public submit(v: any) {
+    console.log(v)
+  }
 
 }
+
+
+// NgModel не [ngModel], NgModelGroup , NgForm
+
+// NG_VALIDATORS, NG_ASYNC_VALIDATORS, @Directive
+
+// @Directive({
+//   selector:'[ssn]',
+//   provider:[{provide:NG_VALIDATORS,useValue:myCustomValidator,multi:true}]
+// })
+
+// FormControl, FormGroup, FormArray
