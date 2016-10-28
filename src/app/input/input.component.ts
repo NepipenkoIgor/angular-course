@@ -1,28 +1,8 @@
-import {Component, Directive, Input, Output, EventEmitter, ElementRef} from '@angular/core';
+import {Component, Input, Output, EventEmitter, Inject} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 
-
-@Directive({
-  selector: 'input[log-directive]',
-  host: {
-    '(input)': 'onInput($event)'
-  }
-})
-export class LogDirective {
-
-  private _elRef: ElementRef;
-
-  constructor(_elRef: ElementRef) {
-    this._elRef = _elRef
-    console.log(this._elRef.nativeElement)
-  }
-
-  public onInput(ev: KeyboardEvent) {
-    let el = event.target as HTMLInputElement;
-    console.log(`from derective ${el.value}`);
-  }
-}
+import {InputService} from './input.service';
 
 @Component({
   selector: 'course-input',
@@ -31,18 +11,31 @@ export class LogDirective {
 })
 export class InputComponent {
 
+  private _inputService:InputService;
 
   public name = 'VOVA';
 
   public obj = {
-    name:'Vlad',
-    id:3
+    name: 'Vlad',
+    id: 3
   }
-  public a:number = 0.2345;
-  public b:number = 1.2845;
+  public a: number = 0.2345;
+  public b: number = 1.2845;
+
+  constructor(_inputService:InputService,
+    @Inject('SizeService') private _sizeService,
+              @Inject('API_URL') private _api_url ){
+    this._sizeService.run();
+    this._inputService=_inputService;
+
+    this._inputService.getUsers().subscribe(users=>{
+      console.log(users)
+    })
+
+  }
 
   public msg = new Promise<string>((resolve, reject) => {
-    setTimeout(()=>resolve('My msg'),3000)
+    setTimeout(() => resolve('My msg'), 3000)
   })
 
   public time = new Observable<string>((observer: Observer<string>) => {
@@ -66,6 +59,11 @@ export class InputComponent {
 
   @Output()
   public myCustomEvent: EventEmitter<string> = new EventEmitter();
+
+
+  change() {
+    console.log(this)
+  }
 
   // public emit(ev: MouseEvent) {
   //   let el = ev.target as HTMLInputElement;

@@ -36,3 +36,15 @@ module.exports = function (config) {
     singleRun: false
   });
 };
+
+class A{
+  run(){
+
+  }
+}
+
+class B extends A{
+  constructor(){
+c
+  }
+}
